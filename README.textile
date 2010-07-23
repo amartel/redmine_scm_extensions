@@ -1,0 +1,34 @@
+h1. Introduction
+
+Main features of the plugin:
+* Add 3 actions in repository views: "upload files", "new folder" and "delete file/folder". Right now, only subversion is supported...
+* Add a new macro _scm_show_ to include repository inside a wiki page 
+
+Development was done using REDMINE trunk r3826 (=> 0.9.5 +) but any release after 0.9 should work
+
+About subversion support:
+To commit changes in Subversion, the plugin opens the repository with the file protocol. For this reason, you need the following:
+* The repositories have to be installed on the REDMINE server.
+* Plugin will replace the beginning of your repository location ([protocol]://[server]/" with "file:///svnroot/". You may need to create a symbolic link /svnroot for this to work...  
+
+h1. Setup
+
+h3. 1. Install plugin into vendor/plugins
+
+If you want to install redmine_http_auth, run the following command from your redmine directory:
+* ruby script/plugin install http://github.com/AdamLantos/redmine_http_auth.git
+
+Then install redmine_scm_extensions with:
+* ruby script/plugin install http://github.com/amartel/redmine_scm_extensions.git
+
+No DB migration is required...
+
+h3. 2. Restart your web server
+
+
+h3. 3. Configure REDMINE with your web browser
+
+If everything is OK, you should see both plugins (WebDav and HTTP authentication) in the plugin list (Administration -> Plugins)
+
+A new permission is now available (SCM extensions -> Update repository) and you have to assign it to the roles you need
+

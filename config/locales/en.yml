@@ -1,0 +1,16 @@
+# English strings go
+en:
+  project_module_scm_extensions: "SCM extensions"
+  permission_scm_write_access: "Update repository"
+  label_scm_extensions_upload: "Upload files"
+  notice_scm_extensions_upload_success: "Uploaded successfully (non modified files were ignored)"
+  error_scm_extensions_upload_failed: "Error. Update canceled"
+  error_scm_extensions_no_path_head: "Path doesn't exist in current revision of repository"
+  error_scm_extensions_delete_failed: "Error. Delete canceled"
+  notice_scm_extensions_delete_success: "Deleted successfully"
+  notice_scm_extensions_mkdir_success: "Folder/directory created successfully"
+  error_scm_extensions_mkdir_failed: "Error. Folder/directory not created"
+  label_scm_extensions_new_folder: "New folder/directory"
+  label_scm_extensions_delete_folder: "Delete folder/directory"
+  label_scm_extensions_delete_file: "Delete file"
+  label_scm_extensions_folder_name: "Name of the new folder/directory"

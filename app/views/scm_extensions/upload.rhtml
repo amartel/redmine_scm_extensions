@@ -1,0 +1,17 @@
+<h2><%=l(:label_scm_extensions_upload)%></h2>
+
+<h2><%= @scm_extensions.path %></h2>
+<% form_for :scm_extensions, @scm_extensions, :url => {:controller => 'scm_extensions', :action => 'upload', :id => @scm_extensions.project}, :html => {:multipart => true, :id => 'files_form'} do |f| %>
+<%= f.hidden_field :path %>
+<p><label><%=l(:field_comments)%></label><%= f.text_area :comments, :cols => 100, :rows => 10, :accesskey => accesskey(:edit), :class => 'wiki-edit' %></p>
+<p><label><%=l(:label_attachment_plural)%></label><br /><%= render :partial => 'attachments/form' %></p>
+
+<p><%= submit_tag l(:button_save) %>
+</p>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'scm' %>
+<% end %>
+
+<% html_title(l(:label_scm_extensions_upload)) -%>

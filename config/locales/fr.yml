@@ -1,0 +1,16 @@
+# French strings go
+fr:
+  project_module_scm_extensions: "SCM extensions"
+  permission_scm_write_access: "Modifier le contenu du dépôt"
+  label_scm_extensions_upload: "Ajoût/mise à jour de fichiers"
+  notice_scm_extensions_upload_success: "Sauvegarde effectuée (les fichiers non modifiés sont ignorés)"
+  error_scm_extensions_upload_failed: "Erreur. Sauvegarde non effectuée"
+  error_scm_extensions_no_path_head: "Chemin inexistant dans la version courante du dépôt"
+  error_scm_extensions_delete_failed: "Erreur. Suppression non effectuée"
+  notice_scm_extensions_delete_success: "Suppression effectuée"
+  notice_scm_extensions_mkdir_success: "Dossier/répertoire créé"
+  error_scm_extensions_mkdir_failed: "Erreur. Dossier/répertoire non créé"
+  label_scm_extensions_new_folder: "Nouveau dossier/répertoire"
+  label_scm_extensions_delete_folder: "Supprimer dossier/répertoire"
+  label_scm_extensions_delete_file: "Supprimer fichier"
+  label_scm_extensions_folder_name: "Nom du nouveau dossier/répertoire"
