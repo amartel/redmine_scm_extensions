@@ -15,10 +15,7 @@ h1. Setup
 
 h3. 1. Install plugin into vendor/plugins
 
-If you want to install redmine_http_auth, run the following command from your redmine directory:
-* ruby script/plugin install http://github.com/AdamLantos/redmine_http_auth.git
-
-Then install redmine_scm_extensions with:
+Install redmine_scm_extensions with:
 * ruby script/plugin install http://github.com/amartel/redmine_scm_extensions.git
 
 No DB migration is required...
