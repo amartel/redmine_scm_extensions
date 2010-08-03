@@ -33,6 +33,7 @@ A new permission is now available (SCM extensions -> Update repository) and you 
 h1. History
 
 0.0.2: 2010-08-03
-* Add support for filesystem SCM
+* New: support for filesystem SCM
+* New: Members can be selected in upload form and the plugin will notify them by email if upload complete successfully
 
 0.0.1: Initial release
