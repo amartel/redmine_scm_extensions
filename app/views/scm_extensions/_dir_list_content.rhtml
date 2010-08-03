@@ -31,7 +31,9 @@
 <td class="revision"><%= scm_extensions_link_to_revision(changeset.revision, @project) if changeset %></td>
 <% end %>
 <td class="age"><%= distance_of_time_in_words(entry.lastrev.time, Time.now) if entry.lastrev && entry.lastrev.time %></td>
+<% if !@project.repository.is_a?(Repository::Filesystem) %>
 <td class="author"><%= changeset.nil? ? h(entry.lastrev.author.to_s.split('<').first) : changeset.author if entry.lastrev %></td>
 <td class="comments"><%=h truncate(changeset.comments, :length => 50) unless changeset.nil? %></td>
+<% end %>
 </tr>
 <% end %>

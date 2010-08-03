@@ -34,6 +34,9 @@ class ScmExtensionsController < ApplicationController
     @scm_extensions = ScmExtensionsWrite.new(:path => path, :project => @project)
 
     if !request.get? && !request.xhr?
+      @scm_extensions.path = params[:scm_extensions][:path]
+      @scm_extensions.comments = params[:scm_extensions][:comments]
+      @scm_extensions.recipients = params[:watchers]
       path = params[:scm_extensions][:path].sub(/^root/,'').sub(/^\//,'')
       attached = []
       if params[:attachments] && params[:attachments].is_a?(Hash)
@@ -41,10 +44,10 @@ class ScmExtensionsController < ApplicationController
 
         if @project.repository.scm.respond_to?('scm_extensions_upload')
           ret = @project.repository.scm.scm_extensions_upload(@project, svnpath, params[:attachments], params[:scm_extensions][:comments], nil)
-
           case ret
           when 0
-            flash[:notice] = l(:notice_scm_extensions_upload_success)
+            flash[:notice] = l(:notice_scm_extensions_upload_success) if @scm_extensions.recipients
+            @scm_extensions.deliver(params[:attachments]) 
           when 1
             flash[:error] = l(:error_scm_extensions_upload_failed)
           when 2

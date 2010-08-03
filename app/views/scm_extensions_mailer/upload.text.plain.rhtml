@@ -1,0 +1,20 @@
+<%= l(:label_added_time_by, :author => User.current, :age => time_tag(Time.now)) %>:
+
+<%= @obj.comments %>
+
+
+<% 
+link_path = 'root'
+link_path << '/' unless @folder_path.empty?
+link_path << @folder_path
+ %>
+<%=l(:label_scm_extensions_upload_body)%><%= link_to h(link_path), url_for(:controller => 'repositories', :action => 'show', :id => @obj.project, :path => to_path_param(@folder_path), :rev => nil, :only_path => false) %>
+
+<% @attachments.each_value do |attachment|
+file = attachment['file']
+next unless file && file.size > 0
+ %>
+* <%= link_to h(link_path + '/' + File.basename(file.original_filename)), url_for(:controller => 'scm_extensions', :action => 'download', :id => @obj.project, :path => to_path_param(@folder_path+ '/' + File.basename(file.original_filename)), :rev => nil, :only_path => false) %>
+<% end %>
+
+

@@ -24,7 +24,7 @@ Redmine::Plugin.register :redmine_scm_extensions do
   name 'SCM extensions plugin'
   author 'Arnaud Martel'
   description 'plugin to allow write operations for subversion repositories and provide new wiki macro'
-  version '0.0.1'
+  version '0.0.2'
   
   project_module :scm_extensions do
     permission :scm_write_access, {:scm_extensions => [:upload, :mkdir, :delete]}

@@ -3,7 +3,7 @@ en:
   project_module_scm_extensions: "SCM extensions"
   permission_scm_write_access: "Update repository"
   label_scm_extensions_upload: "Upload files"
-  notice_scm_extensions_upload_success: "Uploaded successfully (non modified files were ignored)"
+  notice_scm_extensions_upload_success: "Uploaded successfully"
   error_scm_extensions_upload_failed: "Error. Update canceled"
   error_scm_extensions_no_path_head: "Path doesn't exist in current revision of repository"
   error_scm_extensions_delete_failed: "Error. Delete canceled"
@@ -14,3 +14,6 @@ en:
   label_scm_extensions_delete_folder: "Delete folder/directory"
   label_scm_extensions_delete_file: "Delete file"
   label_scm_extensions_folder_name: "Name of the new folder/directory"
+
+  label_scm_extensions_upload_subject: "{{value}}: New files are available"
+  label_scm_extensions_upload_body: "The following files have been uploaded in the folder/directory "

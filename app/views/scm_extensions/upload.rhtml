@@ -1,10 +1,35 @@
 <h2><%=l(:label_scm_extensions_upload)%></h2>
 
+<script language="javascript">
+function SetAllCheckBoxes(CheckValue)
+{
+	if(!document.forms['files_form'])
+		return;
+	var objCheckBoxes = document.forms['files_form'].elements['watchers_'];
+	if(!objCheckBoxes)
+		return;
+	var countCheckBoxes = objCheckBoxes.length;
+	if(!countCheckBoxes)
+		objCheckBoxes.checked = CheckValue;
+	else
+		// set the check value for all check boxes
+		for(var i = 0; i < countCheckBoxes; i++)
+			objCheckBoxes[i].checked = CheckValue;
+}
+</script>
 <h2><%= @scm_extensions.path %></h2>
 <% form_for :scm_extensions, @scm_extensions, :url => {:controller => 'scm_extensions', :action => 'upload', :id => @scm_extensions.project}, :html => {:multipart => true, :id => 'files_form'} do |f| %>
 <%= f.hidden_field :path %>
 <p><label><%=l(:field_comments)%></label><%= f.text_area :comments, :cols => 100, :rows => 10, :accesskey => accesskey(:edit), :class => 'wiki-edit' %></p>
-<p><label><%=l(:label_attachment_plural)%></label><br /><%= render :partial => 'attachments/form' %></p>
+<p><strong><label><%= l(:field_mail_notification) %></label></strong>
+<% @project.users.sort.each do |user| -%>
+<label class="floating"><%= check_box_tag 'watchers[]', user.mail, false %> <%=h user %></label>
+<% end -%><br>
+<input type="button" value="<%= l(:label_all) %>" onclick="SetAllCheckBoxes(true)" />
+<input type="button" value="<%= l(:label_none) %>" onclick="SetAllCheckBoxes(false)" />
+</p>
+<hr>
+<p><strong><label><%=l(:label_attachment_plural)%></label></strong><br /><%= render :partial => 'attachments/form' %></p>
 
 <p><%= submit_tag l(:button_save) %>
 </p>

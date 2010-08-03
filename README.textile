@@ -1,7 +1,7 @@
 h1. Introduction
 
 Main features of the plugin:
-* Add 3 actions in repository views: "upload files", "new folder" and "delete file/folder". Right now, only subversion is supported...
+* Add 3 actions in repository views: "upload files", "new folder" and "delete file/folder". Right now, only subversion and filesystem SCM are supported...
 * Add a new macro _scm_show_ to include repository inside a wiki page 
 
 Development was done using REDMINE trunk r3826 (=> 0.9.5 +) but any release after 0.9 should work
@@ -25,7 +25,14 @@ h3. 2. Restart your web server
 
 h3. 3. Configure REDMINE with your web browser
 
-If everything is OK, you should see both plugins (WebDav and HTTP authentication) in the plugin list (Administration -> Plugins)
+If everything is OK, you should SCM extensions in the plugin list (Administration -> Plugins)
 
 A new permission is now available (SCM extensions -> Update repository) and you have to assign it to the roles you need
 
+
+h1. History
+
+0.0.2: 2010-08-03
+* Add support for filesystem SCM
+
+0.0.1: Initial release
