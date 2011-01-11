@@ -15,7 +15,7 @@ link_path << @folder_path
 file = attachment['file']
 next unless file && file.size > 0
  %>
-<li><%= link_to h(link_path + '/' + File.basename(file.original_filename)), url_for(:controller => 'scm_extensions', :action => 'download', :id => @obj.project, :path => to_path_param(@folder_path+ '/' + File.basename(file.original_filename)), :rev => nil, :only_path => false) %></li>
+<li><%= link_to h(link_path + '/' + File.basename(file.original_filename)), url_for(:controller => 'repositories', :action => 'entry', :id => @obj.project, :path => to_path_param(@folder_path+ '/' + File.basename(file.original_filename)), :rev => nil, :only_path => false) %></li>
 <% end %>
 </ul>
 
