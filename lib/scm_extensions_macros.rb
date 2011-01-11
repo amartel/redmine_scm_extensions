@@ -15,6 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 require 'redmine'
+require 'sort_helper'
 
 module SCMExtensionsProjectMacro
   Redmine::WikiFormatting::Macros.register do
@@ -41,6 +42,31 @@ module SCMExtensionsProjectMacro
 
       o = ""
       o << render(:partial => 'scm_extensions/dir_list')
+
+      return o
+    end
+  end
+
+  Redmine::WikiFormatting::Macros.register do
+    desc "Display list of issues. Examples:\n\n" +
+      " !{{issue_box(query_id)}} -- Show issues filtered by a specific public query\n"
+    macro :issue_box do |obj, args|
+      
+      return "" if !User.current.allowed_to?(:view_issues, @project)
+      return "" if !args[0]
+      queryId = args[0].strip
+      cond = "project_id IS NULL"
+      cond << " OR project_id = #{@project.id}" if @project
+      @query = Query.find(queryId, :conditions => cond)
+      @query.project = @project
+
+      @issues = @query.issues(:include => [:assigned_to, :tracker, :priority, :category, :fixed_version],
+                                :order => "issues.id desc")
+        
+      return "" if @issues.nil?
+
+      o = ""
+      o << render(:partial => 'scm_extensions/issue_box')
 
       return o
     end
