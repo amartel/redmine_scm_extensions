@@ -32,6 +32,33 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
     else
       output << link_to(image_tag('delete.png')+l(:label_scm_extensions_delete_file), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :path => @path, :only_path => true}, :confirm => l(:text_are_you_sure)) if @project.repository.scm.respond_to?('scm_extensions_delete')
     end
+    if User.current.allowed_to?(:synapse_access, @project)
+      output << "&nbsp;<span style='float: right;'>"
+      options={}
+      options[:target]='_blank'
+      begin
+        if @project.repository.is_a?(Repository::Filesystem)
+          rootdir = @project.repository.url
+          mountdir = rootdir.sub(/\/files$/, '')
+          repo_size = `df -h | grep #{mountdir} | awk '{print "used: " $2 " - free: " $3}'`
+          output << repo_size + "&nbsp;&nbsp;"
+        end
+        if !Setting.plugin_redmine_synapse['url_help_files'].empty?
+          url = Setting.plugin_redmine_synapse['url_help_files']
+          link = "<a href='" + url + "' target='_blank'>"+ image_tag('help.png')+l(:label_help) + "</a>"
+          output << "&nbsp;&nbsp;#{link}"
+        end
+        if !Setting.plugin_redmine_synapse['url_video_files'].empty?
+          url = Setting.plugin_redmine_synapse['url_video_files']
+          link = "<a href='" + url + "' target='_blank'>"+ image_tag('link.png')+l(:label_synapse_video) + "</a>"
+          output << "&nbsp;&nbsp;#{link}"
+        end
+      rescue
+        output << ""
+      end
+      output << "</span>"
+    end
+    output << "<br/>"
     return output
   end
 end
