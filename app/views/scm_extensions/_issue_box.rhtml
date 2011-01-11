@@ -1,0 +1,7 @@
+<div class="issue_box">
+<% @issues.each do |issue| %>
+<ul>
+<li><%= link_to issue.id, :controller => 'issues', :action => 'show', :id => issue %>: <%= issue.subject %></li>
+</ul>
+<% end %>
+</div>
