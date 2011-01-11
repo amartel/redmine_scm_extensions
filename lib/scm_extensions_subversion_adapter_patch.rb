@@ -87,8 +87,8 @@ module SubversionAdapterMethodsScmExtensions
           filename = File.basename(file.original_filename)
 
           entry = entries(File.join(folder_path,filename), identifier)
-          if entry
-            cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} update #{File.join(dir, filename)} --username #{User.current.login}"
+          if entry && entry.size > 0
+            cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} update \"#{File.join(dir, filename)}\" --username #{User.current.login}"
             shellout(cmd)
             error = true if ($? != 0)
           end
@@ -100,8 +100,8 @@ module SubversionAdapterMethodsScmExtensions
             end
           end
 
-          if !entry
-            cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} add #{File.join(dir, filename)} --username #{User.current.login}"
+          if !entry || entry.size == 0
+            cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} add \"#{File.join(dir, filename)}\" --username #{User.current.login}"
             shellout(cmd)
             error = true if ($? != 0)
           end
