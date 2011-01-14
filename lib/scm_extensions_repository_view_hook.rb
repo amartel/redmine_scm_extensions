@@ -24,13 +24,13 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
     return output if !(User.current.allowed_to?(:scm_write_access, @project) && User.current.allowed_to?(:commit_access, @project))
     entry = @project.repository.entry(@path)
     if entry.is_dir?
-      output << link_to(image_tag('add.png')+l(:label_scm_extensions_upload), {:controller => 'scm_extensions', :action => 'upload', :id => @project, :path => @path, :only_path => true}) if @project.repository.scm.respond_to?('scm_extensions_upload')
+      output << link_to(l(:label_scm_extensions_upload), {:controller => 'scm_extensions', :action => 'upload', :id => @project, :path => @path, :only_path => true}, :class => 'icon icon-add') if @project.repository.scm.respond_to?('scm_extensions_upload')
       output << "&nbsp;&nbsp;"
-      output << link_to(image_tag('add.png')+l(:label_scm_extensions_new_folder), {:controller => 'scm_extensions', :action => 'mkdir', :id => @project, :path => @path, :only_path => true}) if @project.repository.scm.respond_to?('scm_extensions_mkdir')
+      output << link_to(l(:label_scm_extensions_new_folder), {:controller => 'scm_extensions', :action => 'mkdir', :id => @project, :path => @path, :only_path => true}, :class => 'icon icon-add') if @project.repository.scm.respond_to?('scm_extensions_mkdir')
       output << "&nbsp;&nbsp;"
-      output << link_to(image_tag('delete.png')+l(:label_scm_extensions_delete_folder), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :path => @path, :only_path => true}, :confirm => l(:text_are_you_sure)) if @project.repository.scm.respond_to?('scm_extensions_delete')
+      output << link_to(l(:label_scm_extensions_delete_folder), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @project.repository.scm.respond_to?('scm_extensions_delete')
     else
-      output << link_to(image_tag('delete.png')+l(:label_scm_extensions_delete_file), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :path => @path, :only_path => true}, :confirm => l(:text_are_you_sure)) if @project.repository.scm.respond_to?('scm_extensions_delete')
+      output << link_to(l(:label_scm_extensions_delete_file), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @project.repository.scm.respond_to?('scm_extensions_delete')
     end
     if User.current.allowed_to?(:synapse_access, @project)
       output << "&nbsp;<span style='float: right;'>"
@@ -45,12 +45,12 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
         end
         if !Setting.plugin_redmine_synapse['url_help_files'].empty?
           url = Setting.plugin_redmine_synapse['url_help_files']
-          link = "<a href='" + url + "' target='_blank'>"+ image_tag('help.png')+l(:label_help) + "</a>"
+          link = "<a href='" + url + "' target='_blank' class='icon icon-help'>"+ l(:label_help) + "</a>"
           output << "&nbsp;&nbsp;#{link}"
         end
         if !Setting.plugin_redmine_synapse['url_video_files'].empty?
           url = Setting.plugin_redmine_synapse['url_video_files']
-          link = "<a href='" + url + "' target='_blank'>"+ image_tag('link.png')+l(:label_synapse_video) + "</a>"
+          link = "<a href='" + url + "' target='_blank' class='icon icon-help'>"+ l(:label_synapse_video) + "</a>"
           output << "&nbsp;&nbsp;#{link}"
         end
       rescue
