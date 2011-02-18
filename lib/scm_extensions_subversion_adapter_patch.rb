@@ -57,7 +57,7 @@ module SubversionAdapterMethodsScmExtensions
 
   def scm_extensions_target(repository, path = '')
     base = repository.url
-    base = base.sub(/^.*:\/\/[^\/]*\//,"file:///svnroot/")
+    base = base.sub(/^.*:\/\/[^\/]*\//,"file:///svnroot/") if !base.match('^file:')
     uri = "#{base}/#{path}"
     uri = URI.escape(URI.escape(uri), '[]')
     shell_quote(uri.gsub(/[?<>\*]/, ''))
