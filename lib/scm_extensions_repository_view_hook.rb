@@ -23,6 +23,7 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
     return output if (@revision && !@revision.empty? && @revision != "HEAD"  && @project.repository.is_a?(Repository::Subversion))
     return output if !(User.current.allowed_to?(:scm_write_access, @project) && User.current.allowed_to?(:commit_access, @project))
     entry = @project.repository.entry(@path)
+    output << "<span style='float: left; top: -10px; position: relative;'>"
     if entry.is_dir?
       output << link_to(l(:label_scm_extensions_upload), {:controller => 'scm_extensions', :action => 'upload', :id => @project, :path => @path, :only_path => true}, :class => 'icon icon-add') if @project.repository.scm.respond_to?('scm_extensions_upload')
       output << "&nbsp;&nbsp;"
@@ -32,15 +33,17 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
     else
       output << link_to(l(:label_scm_extensions_delete_file), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @project.repository.scm.respond_to?('scm_extensions_delete')
     end
+    output << "</span>"
     if User.current.allowed_to?(:synapse_access, @project)
-      output << "&nbsp;<span style='float: right;'>"
+      output << "&nbsp;<span style='float: right; top: -10px; position: relative;'>"
       options={}
       options[:target]='_blank'
       begin
         if @project.repository.is_a?(Repository::Filesystem)
           rootdir = @project.repository.url
           mountdir = rootdir.sub(/\/files$/, '')
-          repo_size = `df -h | grep #{mountdir} | awk '{print "used: " $2 " - free: " $3}'`
+          repo_size=""
+          repo_size = `/opt/appli/checksize #{mountdir}  #{@project.identifier}` if File.exist?("/opt/appli/checksize")
           output << repo_size + "&nbsp;&nbsp;"
         end
         if !Setting.plugin_redmine_synapse['url_help_files'].empty?
