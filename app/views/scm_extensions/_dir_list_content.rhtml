@@ -1,4 +1,5 @@
 <% @entries.each do |entry| %>
+<% if !User.current.allowed_to?(:synapse_access, @project) || !(entry.name =~ /^\./) %>
 <% tr_id = Digest::MD5.hexdigest(entry.path)
    depth = params[:depth].to_i %>
 <tr id="<%= tr_id %>" class="<%= h params[:parent_id] %> entry <%= entry.kind %>">
@@ -36,4 +37,5 @@
 <td class="comments"><%=h truncate(changeset.comments, :length => 50) unless changeset.nil? %></td>
 <% end %>
 </tr>
+<% end %>
 <% end %>
