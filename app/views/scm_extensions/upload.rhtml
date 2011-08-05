@@ -16,6 +16,18 @@ function SetAllCheckBoxes(CheckValue)
 		for(var i = 0; i < countCheckBoxes; i++)
 			objCheckBoxes[i].checked = CheckValue;
 }
+function addFileUploadField() {
+    if (fileFieldCount >= 10) return false
+    fileFieldCount++;
+    var f = document.createElement("input");
+    f.type = "file";
+    f.name = "attachments[" + fileFieldCount + "][file]";
+    f.size = 30;
+    p = document.getElementById("attachments_fields");
+    p.appendChild(document.createElement("br"));
+    p.appendChild(f);
+}
+
 </script>
 <h2><%= @scm_extensions.path %></h2>
 <% form_for :scm_extensions, @scm_extensions, :url => {:controller => 'scm_extensions', :action => 'upload', :id => @scm_extensions.project}, :html => {:multipart => true, :id => 'files_form'} do |f| %>
@@ -29,7 +41,7 @@ function SetAllCheckBoxes(CheckValue)
 <input type="button" value="<%= l(:label_none) %>" onclick="SetAllCheckBoxes(false)" />
 </p>
 <hr>
-<p><strong><label><%=l(:label_attachment_plural)%></label></strong><br /><%= render :partial => 'attachments/form' %></p>
+<p><strong><label><%=l(:label_attachment_plural)%></label></strong><br /><%= render :partial => 'scm_extensions/file' %></p>
 
 <p><%= submit_tag l(:button_save) %>
 </p>
