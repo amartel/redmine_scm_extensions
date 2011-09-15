@@ -65,7 +65,7 @@ module SubversionAdapterMethodsScmExtensions
 
   def scm_extensions_upload(project, folder_path, attachments, comments, identifier)
     return -1 if attachments.nil? || !attachments.is_a?(Hash)
-    rev = identifier ? "@{identifier}" : ""
+    rev = identifier ? "@#{identifier}" : ""
     container =  entries(folder_path, identifier)
     if container
       error = false
@@ -126,7 +126,7 @@ module SubversionAdapterMethodsScmExtensions
 
   def scm_extensions_delete(project, path, comments, identifier)
     return -1 if path.nil? || path.empty?
-    rev = identifier ? "@{identifier}" : ""
+    rev = identifier ? "@#{identifier}" : ""
     container =  entries(path, identifier)
     if container && path != "/"
       error = false
@@ -146,7 +146,7 @@ module SubversionAdapterMethodsScmExtensions
 
   def scm_extensions_mkdir(project, path, comments, identifier)
     return -1 if path.nil? || path.empty?
-    rev = identifier ? "@{identifier}" : ""
+    rev = identifier ? "@#{identifier}" : ""
     error = false
     scm_extensions_gettmpdir(false) do |dir|
       commentfile = "#{dir}.txt"
