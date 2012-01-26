@@ -30,7 +30,7 @@ function addFileUploadField() {
 
 </script>
 <h2><%= @scm_extensions.path %></h2>
-<% form_for :scm_extensions, @scm_extensions, :url => {:controller => 'scm_extensions', :action => 'upload', :id => @scm_extensions.project}, :html => {:multipart => true, :id => 'files_form'} do |f| %>
+<% form_for :scm_extensions, @scm_extensions, :url => {:controller => 'scm_extensions', :action => 'upload', :id => @scm_extensions.project, :repository_id => @repository.identifier}, :html => {:multipart => true, :id => 'files_form'} do |f| %>
 <%= f.hidden_field :path %>
 <p><label><%=l(:field_comments)%></label><%= f.text_area :comments, :cols => 100, :rows => 10, :accesskey => accesskey(:edit), :class => 'wiki-edit' %></p>
 <p><strong><label><%= l(:field_mail_notification) %></label></strong>

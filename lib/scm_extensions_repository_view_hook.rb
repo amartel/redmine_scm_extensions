@@ -17,21 +17,22 @@
 class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
   def view_repositories_show_contextual(context = { })
     @project = context[:project]
+    @repository = context[:repository]
     @path = context[:controller].instance_variable_get("@path")
     @revision = context[:controller].instance_variable_get("@rev")
     output = ""
-    return output if (@revision && !@revision.empty? && @revision != "HEAD"  && @project.repository.is_a?(Repository::Subversion))
+    return output if (@revision && !@revision.empty? && @revision != "HEAD"  && @repository.is_a?(Repository::Subversion))
     return output if !(User.current.allowed_to?(:scm_write_access, @project) && User.current.allowed_to?(:commit_access, @project))
-    entry = @project.repository.entry(@path)
+    entry = @repository.entry(@path)
     output << "<span style='float: left; top: -10px; position: relative;'>"
     if entry.is_dir?
-      output << link_to(l(:label_scm_extensions_upload), {:controller => 'scm_extensions', :action => 'upload', :id => @project, :path => @path, :only_path => true}, :class => 'icon icon-add') if @project.repository.scm.respond_to?('scm_extensions_upload')
+      output << link_to(l(:label_scm_extensions_upload), {:controller => 'scm_extensions', :action => 'upload', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true}, :class => 'icon icon-add') if @repository.scm.respond_to?('scm_extensions_upload')
       output << "&nbsp;&nbsp;"
-      output << link_to(l(:label_scm_extensions_new_folder), {:controller => 'scm_extensions', :action => 'mkdir', :id => @project, :path => @path, :only_path => true}, :class => 'icon icon-add') if @project.repository.scm.respond_to?('scm_extensions_mkdir')
+      output << link_to(l(:label_scm_extensions_new_folder), {:controller => 'scm_extensions', :action => 'mkdir', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true}, :class => 'icon icon-add') if @repository.scm.respond_to?('scm_extensions_mkdir')
       output << "&nbsp;&nbsp;"
-      output << link_to(l(:label_scm_extensions_delete_folder), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @project.repository.scm.respond_to?('scm_extensions_delete')
+      output << link_to(l(:label_scm_extensions_delete_folder), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @repository.scm.respond_to?('scm_extensions_delete')
     else
-      output << link_to(l(:label_scm_extensions_delete_file), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @project.repository.scm.respond_to?('scm_extensions_delete')
+      output << link_to(l(:label_scm_extensions_delete_file), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @repository.scm.respond_to?('scm_extensions_delete')
     end
     output << "</span>"
     if User.current.allowed_to?(:synapse_access, @project)
@@ -39,8 +40,8 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
       options={}
       options[:target]='_blank'
       begin
-        if @project.repository.is_a?(Repository::Filesystem)
-          rootdir = @project.repository.url
+        if @repository.is_a?(Repository::Filesystem)
+          rootdir = @repository.url
           mountdir = rootdir.sub(/\/files$/, '')
           repo_size=""
           repo_size = `/opt/appli/checksize #{mountdir}  #{@project.identifier}` if File.exist?("/opt/appli/checksize")

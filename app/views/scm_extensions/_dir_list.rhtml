@@ -7,7 +7,7 @@
 <th><%= l(:label_revision) %></th>
 <% end %>
 <th><%= l(:label_age) %></th>
-<% if !@project.repository.is_a?(Repository::Filesystem) %>
+<% if !@repository.is_a?(Repository::Filesystem) %>
 <th><%= l(:field_author) %></th>
 <th><%= l(:field_comments) %></th>
 <% end %>

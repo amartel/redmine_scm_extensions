@@ -29,21 +29,24 @@ class ScmExtensionsController < ApplicationController
   include AttachmentsHelper
 
   def upload
-    path = "root"
+    path_root = @repository.identifier.blank? ? "root" : @repository.identifier
+    path = ""
+    path << path_root
     path << "/#{params[:path]}" if (params[:path] && !params[:path].empty?)
-    @scm_extensions = ScmExtensionsWrite.new(:path => path, :project => @project)
+    @scm_extensions = ScmExtensionsWrite.new(:path => path, :project => @project, :repository => @repository)
 
     if !request.get? && !request.xhr?
       @scm_extensions.path = params[:scm_extensions][:path]
       @scm_extensions.comments = params[:scm_extensions][:comments]
       @scm_extensions.recipients = params[:watchers]
-      path = params[:scm_extensions][:path].sub(/^root/,'').sub(/^\//,'')
+      reg = Regexp.new("^#{path_root}")
+      path = params[:scm_extensions][:path].sub(reg,'').sub(/^\//,'')
       attached = []
       if params[:attachments] && params[:attachments].is_a?(Hash)
         svnpath = path.empty? ? "/" : path
 
-        if @project.repository.scm.respond_to?('scm_extensions_upload')
-          ret = @project.repository.scm.scm_extensions_upload(@project, svnpath, params[:attachments], params[:scm_extensions][:comments], nil)
+        if @repository.scm.respond_to?('scm_extensions_upload')
+          ret = @repository.scm.scm_extensions_upload(@repository, svnpath, params[:attachments], params[:scm_extensions][:comments], nil)
           case ret
           when 0
             flash[:notice] = l(:notice_scm_extensions_upload_success) if @scm_extensions.recipients
@@ -56,7 +59,11 @@ class ScmExtensionsController < ApplicationController
         end
 
       end
-      redirect_to :controller => 'repositories', :action => 'show', :id => @project, :path => path.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+      if @repository.identifier.blank?
+        redirect_to :controller => 'repositories', :action => 'show', :id => @project, :path => path.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+      else
+        redirect_to :controller => 'repositories', :action => 'show', :id => @project, :repository_id => @repository.identifier, :path => path.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+      end
       return
     end
   end
@@ -66,8 +73,8 @@ class ScmExtensionsController < ApplicationController
     parent = path
     svnpath = path.empty? ? "/" : path
 
-    if @project.repository.scm.respond_to?('scm_extensions_delete')
-      ret = @project.repository.scm.scm_extensions_delete(@project, svnpath, "deleted #{path}", nil)
+    if @repository.scm.respond_to?('scm_extensions_delete')
+      ret = @repository.scm.scm_extensions_delete(@repository, svnpath, "deleted #{path}", nil)
       case ret
       when 0
         parent = File.dirname(svnpath).sub(/^\//,'')
@@ -77,22 +84,28 @@ class ScmExtensionsController < ApplicationController
       end
     end
 
-    redirect_to :controller => 'repositories', :action => 'show', :id => @project, :path => parent.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+    if @repository.identifier.blank?
+      redirect_to :controller => 'repositories', :action => 'show', :id => @project, :path => parent.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+    else
+      redirect_to :controller => 'repositories', :action => 'show', :id => @project, :repository_id => @repository.identifier, :path => parent.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+    end
     return
   end
 
   def mkdir
-    path = "root"
+    path_root = @repository.identifier.blank? ? "root" : @repository.identifier
+    path = ""
+    path << path_root
     path << "/#{params[:path]}" if (params[:path] && !params[:path].empty?)
     @scm_extensions = ScmExtensionsWrite.new(:path => path, :project => @project)
 
     if !request.get? && !request.xhr?
-      path = params[:scm_extensions][:path].sub(/^root/,'').sub(/^\//,'')
+      path = params[:scm_extensions][:path].sub(/^#{path_root}/,'').sub(/^\//,'')
       foldername = params[:scm_extensions][:new_folder]
       svnpath = path.empty? ? "/" : path
       
-      if @project.repository.scm.respond_to?('scm_extensions_mkdir')
-        ret = @project.repository.scm.scm_extensions_mkdir(@project, File.join(svnpath, foldername), params[:scm_extensions][:comments], nil)
+      if @repository.scm.respond_to?('scm_extensions_mkdir')
+        ret = @repository.scm.scm_extensions_mkdir(@repository, File.join(svnpath, foldername), params[:scm_extensions][:comments], nil)
         case ret
         when 0
           flash[:notice] = l(:notice_scm_extensions_mkdir_success)
@@ -100,7 +113,11 @@ class ScmExtensionsController < ApplicationController
           flash[:error] = l(:error_scm_extensions_mkdir_failed)
         end
       end
-      redirect_to :controller => 'repositories', :action => 'show', :id => @project, :path => path.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+      if @repository.identifier.blank?
+        redirect_to :controller => 'repositories', :action => 'show', :id => @project, :path => path.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+      else
+        redirect_to :controller => 'repositories', :action => 'show', :id => @project, :repository_id => @repository.identifier, :path => path.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+      end
       return
     end
   end
@@ -133,13 +150,22 @@ class ScmExtensionsController < ApplicationController
 
   def find_project
     @project = Project.find(params[:id])
+    if params[:repository_id].present?
+      @repository = @project.repositories.find_by_identifier_param(params[:repository_id])
+    else
+      @repository = @project.repository
+    end
   rescue ActiveRecord::RecordNotFound
     render_404
   end
 
   def find_repository
     @project = Project.find(params[:id])
-    @repository = @project.repository
+    if params[:repository_id].present?
+      @repository = @project.repositories.find_by_identifier_param(params[:repository_id])
+    else
+      @repository = @project.repository
+    end
     (render_404; return false) unless @repository
     @path = params[:path].join('/') unless params[:path].nil?
     @path ||= ''

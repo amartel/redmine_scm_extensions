@@ -7,12 +7,14 @@ class ScmExtensionsWrite
   attr_accessor :path
   attr_accessor :project
   attr_accessor :recipients
+  attr_accessor :repository
 
   def initialize(options = { })
     self.comments = options[:comments]
     self.new_folder = options[:new_folder]
     self.path = options[:path]
     self.project = options[:project]
+    self.repository = options[:repository]
     self.recipients = {}
   end
 

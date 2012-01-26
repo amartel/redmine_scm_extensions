@@ -15,5 +15,5 @@ en:
   label_scm_extensions_delete_file: "Delete file"
   label_scm_extensions_folder_name: "Name of the new folder/directory"
 
-  label_scm_extensions_upload_subject: "{{value}}: New files are available"
+  label_scm_extensions_upload_subject: "%{value}: New files are available"
   label_scm_extensions_upload_body: "The following files have been uploaded in the folder/directory "

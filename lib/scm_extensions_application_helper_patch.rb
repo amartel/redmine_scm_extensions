@@ -33,9 +33,9 @@ module ApplicationHelperMethodsScmExtensions
     txt.to_s[0,8]
   end
 
-  def scm_extensions_link_to_revision(revision, project, options={})
+  def scm_extensions_link_to_revision(revision, project, repository, options={})
     text = options.delete(:text) || scm_extensions_format_revision(revision)
-    link_to(text, {:controller => 'repositories', :action => 'revision', :id => project, :rev => revision}, :title => l(:label_revision_id, revision))
+    link_to(text, {:controller => 'repositories', :action => 'revision', :id => project, :repository_id => repository.identifier, :rev => revision}, :title => l(:label_revision_id, revision))
   end
 
 end

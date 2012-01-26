@@ -28,7 +28,7 @@ end
 
 module FilesystemAdapterMethodsScmExtensions
 
-  def scm_extensions_upload(project, folder_path, attachments, comments, identifier)
+  def scm_extensions_upload(repository, folder_path, attachments, comments, identifier)
     return -1 if attachments.nil? || !attachments.is_a?(Hash)
     return -1 if scm_extensions_invalid_path(folder_path)
     metapath = (self.url =~ /\/files\/$/ && File.exist?(self.url.sub(/\/files\//, "/attributes")))
@@ -39,9 +39,9 @@ module FilesystemAdapterMethodsScmExtensions
       error = false
 
       rev = -1
-      rev = project.repository.latest_changeset.revision.to_i if project.repository.latest_changeset
+      rev = repository.latest_changeset.revision.to_i if repository.latest_changeset
       rev = rev + 1
-      changeset = Changeset.create(:repository => project.repository,
+      changeset = Changeset.create(:repository => repository,
                                                  :revision => rev, 
                                                  :committer => User.current.login, 
                                                  :committed_on => Time.now,
@@ -54,16 +54,16 @@ module FilesystemAdapterMethodsScmExtensions
         next if scm_extensions_invalid_path(filename)
         begin
           action = "A"
-          action = "M" if File.exists?(File.join(project.repository.url, folder_path, filename)) 
+          action = "M" if File.exists?(File.join(repository.url, folder_path, filename)) 
           Change.create( :changeset => changeset, :action => action, :path => File.join("/", folder_path, filename))
-          File.open(File.join(project.repository.url, folder_path, filename), "wb") do |f|
+          File.open(File.join(repository.url, folder_path, filename), "wb") do |f|
             buffer = ""
             while (buffer = file.read(8192))
               f.write(buffer)
             end
           end
           if metapath
-            metapathtarget = File.join(project.repository.url, folder_path, filename).sub(/\/files\//, "/attributes/")
+            metapathtarget = File.join(repository.url, folder_path, filename).sub(/\/files\//, "/attributes/")
             FileUtils.mkdir_p File.dirname(metapathtarget)
             File.open(metapathtarget, "w") do |f|
               f.write("#{User.current}\n")
@@ -86,7 +86,7 @@ module FilesystemAdapterMethodsScmExtensions
     end
   end
 
-  def scm_extensions_delete(project, path, comments, identifier)
+  def scm_extensions_delete(repository, path, comments, identifier)
     return -1 if path.nil? || path.empty?
     return -1 if scm_extensions_invalid_path(path)
     metapath = (self.url =~ /\/files\/$/ && File.exist?(self.url.sub(/\/files\//, "/attributes")))
@@ -96,18 +96,18 @@ module FilesystemAdapterMethodsScmExtensions
 
       begin
         rev = -1
-        rev = project.repository.latest_changeset.revision.to_i if project.repository.latest_changeset
+        rev = repository.latest_changeset.revision.to_i if repository.latest_changeset
         rev = rev + 1
-        changeset = Changeset.create(:repository => project.repository,
+        changeset = Changeset.create(:repository => repository,
                                                    :revision => rev, 
                                                    :committer => User.current.login, 
                                                    :committed_on => Time.now,
                                                    :comments => comments)
         Change.create( :changeset => changeset, :action => 'D', :path => File.join("/", path))
           
-      FileUtils.remove_entry_secure File.join(project.repository.url, path)
+      FileUtils.remove_entry_secure File.join(repository.url, path)
       if metapath
-        metapathtarget = File.join(project.repository.url, path).sub(/\/files\//, "/attributes/")
+        metapathtarget = File.join(repository.url, path).sub(/\/files\//, "/attributes/")
         FileUtils.remove_entry_secure metapathtarget if File.exist?(metapathtarget)
       end
       rescue
@@ -118,23 +118,23 @@ module FilesystemAdapterMethodsScmExtensions
     end
   end
 
-  def scm_extensions_mkdir(project, path, comments, identifier)
+  def scm_extensions_mkdir(repository, path, comments, identifier)
     return -1 if path.nil? || path.empty?
     return -1 if scm_extensions_invalid_path(path)
 
     error = false
     begin
       rev = -1
-      rev = project.repository.latest_changeset.revision.to_i if project.repository.latest_changeset
+      rev = repository.latest_changeset.revision.to_i if repository.latest_changeset
       rev = rev + 1
-      changeset = Changeset.create(:repository => project.repository,
+      changeset = Changeset.create(:repository => repository,
                                                  :revision => rev, 
                                                  :committer => User.current.login, 
                                                  :committed_on => Time.now,
                                                  :comments => "created folder: #{path}")
       Change.create( :changeset => changeset, :action => 'A', :path => File.join("/", path))
 
-      Dir.mkdir(File.join(project.repository.url, path))
+      Dir.mkdir(File.join(repository.url, path))
     rescue
       error = true
     end

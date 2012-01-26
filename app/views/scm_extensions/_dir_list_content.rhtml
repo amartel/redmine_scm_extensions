@@ -5,7 +5,7 @@
 <tr id="<%= tr_id %>" class="<%= h params[:parent_id] %> entry <%= entry.kind %>">
 <td style="padding-left: <%=18 * depth%>px;" class="filename">
 <% if entry.is_dir? %>
-<span class="expander" onclick="<%=  remote_function :url => {:controller => 'scm_extensions', :action => 'show', :id => @project, :path => to_path_param(entry.path), :rev => @rev, :depth => (depth + 1), :parent_id => tr_id, :show_rev => @show_rev, :link_details => @link_details},
+<span class="expander" onclick="<%=  remote_function :url => {:controller => 'scm_extensions', :action => 'show', :id => @project, :repository_id => @repository.identifier, :path => to_path_param(entry.path), :rev => @rev, :depth => (depth + 1), :parent_id => tr_id, :show_rev => @show_rev, :link_details => @link_details},
 									:method => :get,
                   :update => { :success => tr_id },
                   :position => :after,
@@ -14,25 +14,25 @@
 <% end %>
 <% if @link_details %>
 <%=  link_to h(entry.name),
-          {:controller => 'repositories', :action => (entry.is_dir? ? 'show' : 'changes'), :id => @project, :path => to_path_param(entry.path), :rev => @rev},
+          {:controller => 'repositories', :action => (entry.is_dir? ? 'show' : 'changes'), :id => @project, :repository_id => @repository.identifier, :path => to_path_param(entry.path), :rev => @rev},
           :class => (entry.is_dir? ? 'icon icon-folder' : "icon icon-file #{Redmine::MimeType.css_class_of(entry.name)}")%>
 <% else %>
 <% if entry.is_dir? %>
 <%= entry.name %>
 <% else %>
 <%=  link_to h(entry.name),
-          {:controller => 'scm_extensions', :action => 'download', :id => @project, :path => to_path_param(entry.path), :rev => @rev},
+          {:controller => 'scm_extensions', :action => 'download', :id => @project, :repository_id => @repository.identifier, :path => to_path_param(entry.path), :rev => @rev},
           :class => "icon icon-file #{Redmine::MimeType.css_class_of(entry.name)}"%>
 <% end %>
 <% end %>
 </td>
 <td class="size"><%= (entry.size ? number_to_human_size(entry.size) : "?") unless entry.is_dir? %></td>
-<% changeset = @project.repository.changesets.find_by_revision(entry.lastrev.identifier) if entry.lastrev && entry.lastrev.identifier %>
+<% changeset = @repository.changesets.find_by_revision(entry.lastrev.identifier) if entry.lastrev && entry.lastrev.identifier %>
 <% if @show_rev %>
-<td class="revision"><%= scm_extensions_link_to_revision(changeset.revision, @project) if changeset %></td>
+<td class="revision"><%= scm_extensions_link_to_revision(changeset.revision, @project, @repository) if changeset %></td>
 <% end %>
 <td class="age"><%= distance_of_time_in_words(entry.lastrev.time, Time.now) if entry.lastrev && entry.lastrev.time %></td>
-<% if !@project.repository.is_a?(Repository::Filesystem) %>
+<% if !@repository.is_a?(Repository::Filesystem) %>
 <td class="author"><%= changeset.nil? ? h(entry.lastrev.author.to_s.split('<').first) : changeset.author if entry.lastrev %></td>
 <td class="comments"><%=h truncate(changeset.comments, :length => 50) unless changeset.nil? %></td>
 <% end %>

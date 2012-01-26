@@ -15,5 +15,5 @@ fr:
   label_scm_extensions_delete_file: "Supprimer fichier"
   label_scm_extensions_folder_name: "Nom du nouveau dossier/répertoire"
 
-  label_scm_extensions_upload_subject: "{{value}}: Nouveaux fichiers disponibles"
+  label_scm_extensions_upload_subject: "%{value}: Nouveaux fichiers disponibles"
   label_scm_extensions_upload_body: "Les fichiers suivants ont été transférés dans le répertoire "

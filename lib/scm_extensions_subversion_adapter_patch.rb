@@ -63,7 +63,7 @@ module SubversionAdapterMethodsScmExtensions
     shell_quote(uri.gsub(/[?<>\*]/, ''))
   end
 
-  def scm_extensions_upload(project, folder_path, attachments, comments, identifier)
+  def scm_extensions_upload(repository, folder_path, attachments, comments, identifier)
     return -1 if attachments.nil? || !attachments.is_a?(Hash)
     rev = identifier ? "@#{identifier}" : ""
     container =  entries(folder_path, identifier)
@@ -77,7 +77,7 @@ module SubversionAdapterMethodsScmExtensions
           f.flush
         }
 
-        cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} checkout #{scm_extensions_target(project.repository, folder_path)}#{rev} #{dir} --depth empty --username #{User.current.login}"
+        cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} checkout #{scm_extensions_target(repository, folder_path)}#{rev} #{dir} --depth empty --username #{User.current.login}"
         shellout(cmd)
         error = true if ($? != 0)
 
@@ -124,7 +124,7 @@ module SubversionAdapterMethodsScmExtensions
     end
   end
 
-  def scm_extensions_delete(project, path, comments, identifier)
+  def scm_extensions_delete(repository, path, comments, identifier)
     return -1 if path.nil? || path.empty?
     rev = identifier ? "@#{identifier}" : ""
     container =  entries(path, identifier)
@@ -136,7 +136,7 @@ module SubversionAdapterMethodsScmExtensions
           f.write(comments)
           f.flush
         }
-        cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} delete #{scm_extensions_target(project.repository, path)}#{rev}  -F #{commentfile} --username #{User.current.login}"
+        cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} delete #{scm_extensions_target(repository, path)}#{rev}  -F #{commentfile} --username #{User.current.login}"
         shellout(cmd)
         error = true if ($? != 0 && $? != 256)
       end
@@ -144,7 +144,7 @@ module SubversionAdapterMethodsScmExtensions
     end
   end
 
-  def scm_extensions_mkdir(project, path, comments, identifier)
+  def scm_extensions_mkdir(repository, path, comments, identifier)
     return -1 if path.nil? || path.empty?
     rev = identifier ? "@#{identifier}" : ""
     error = false
@@ -154,7 +154,7 @@ module SubversionAdapterMethodsScmExtensions
         f.write(comments)
         f.flush
       }
-      cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} mkdir #{scm_extensions_target(project.repository, path)}#{rev} -F #{commentfile} --username #{User.current.login}"
+      cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} mkdir #{scm_extensions_target(repository, path)}#{rev} -F #{commentfile} --username #{User.current.login}"
       shellout(cmd)
       error = true if ($? != 0 && $? != 256)
     end
