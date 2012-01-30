@@ -21,6 +21,7 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
     @path = context[:controller].instance_variable_get("@path")
     @revision = context[:controller].instance_variable_get("@rev")
     output = ""
+    return output if !@repository.scm.respond_to?('scm_extensions_upload')
     return output if (@revision && !@revision.empty? && @revision != "HEAD"  && @repository.is_a?(Repository::Subversion))
     return output if !(User.current.allowed_to?(:scm_write_access, @project) && User.current.allowed_to?(:commit_access, @project))
     entry = @repository.entry(@path)
