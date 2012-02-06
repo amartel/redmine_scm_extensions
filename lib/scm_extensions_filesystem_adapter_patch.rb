@@ -38,24 +38,28 @@ module FilesystemAdapterMethodsScmExtensions
     if container
       error = false
 
-      rev = -1
-      rev = repository.latest_changeset.revision.to_i if repository.latest_changeset
-      rev = rev + 1
-      changeset = Changeset.create(:repository => repository,
+      if repository.supports_all_revisions?
+        rev = -1
+        rev = repository.latest_changeset.revision.to_i if repository.latest_changeset
+        rev = rev + 1
+        changeset = Changeset.create(:repository => repository,
                                                  :revision => rev, 
                                                  :committer => User.current.login, 
                                                  :committed_on => Time.now,
                                                  :comments => comments)
       
+      end
       attachments.each_value do |attachment|
         file = attachment['file']
         next unless file && file.size > 0 && !error
         filename = File.basename(file.original_filename)
         next if scm_extensions_invalid_path(filename)
         begin
-          action = "A"
-          action = "M" if File.exists?(File.join(repository.url, folder_path, filename)) 
-          Change.create( :changeset => changeset, :action => action, :path => File.join("/", folder_path, filename))
+          if repository.supports_all_revisions?
+            action = "A"
+            action = "M" if File.exists?(File.join(repository.url, folder_path, filename)) 
+            Change.create( :changeset => changeset, :action => action, :path => File.join("/", folder_path, filename))
+          end
           File.open(File.join(repository.url, folder_path, filename), "wb") do |f|
             buffer = ""
             while (buffer = file.read(8192))
@@ -95,15 +99,17 @@ module FilesystemAdapterMethodsScmExtensions
       error = false
 
       begin
-        rev = -1
-        rev = repository.latest_changeset.revision.to_i if repository.latest_changeset
-        rev = rev + 1
-        changeset = Changeset.create(:repository => repository,
+        if repository.supports_all_revisions?
+          rev = -1
+          rev = repository.latest_changeset.revision.to_i if repository.latest_changeset
+          rev = rev + 1
+          changeset = Changeset.create(:repository => repository,
                                                    :revision => rev, 
                                                    :committer => User.current.login, 
                                                    :committed_on => Time.now,
                                                    :comments => comments)
-        Change.create( :changeset => changeset, :action => 'D', :path => File.join("/", path))
+          Change.create( :changeset => changeset, :action => 'D', :path => File.join("/", path))
+        end
           
       FileUtils.remove_entry_secure File.join(repository.url, path)
       if metapath
@@ -124,16 +130,17 @@ module FilesystemAdapterMethodsScmExtensions
 
     error = false
     begin
-      rev = -1
-      rev = repository.latest_changeset.revision.to_i if repository.latest_changeset
-      rev = rev + 1
-      changeset = Changeset.create(:repository => repository,
+      if repository.supports_all_revisions?
+        rev = -1
+        rev = repository.latest_changeset.revision.to_i if repository.latest_changeset
+        rev = rev + 1
+        changeset = Changeset.create(:repository => repository,
                                                  :revision => rev, 
                                                  :committer => User.current.login, 
                                                  :committed_on => Time.now,
                                                  :comments => "created folder: #{path}")
-      Change.create( :changeset => changeset, :action => 'A', :path => File.join("/", path))
-
+        Change.create( :changeset => changeset, :action => 'A', :path => File.join("/", path))
+      end
       Dir.mkdir(File.join(repository.url, path))
     rescue
       error = true
