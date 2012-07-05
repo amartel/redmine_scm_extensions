@@ -19,7 +19,7 @@ class ScmExtensionsWrite
   end
 
   def deliver(attachments)
-    ScmExtensionsMailer.deliver_send_upload(self, attachments)
+    ScmExtensionsMailer.send_upload(self, attachments).deliver
       return true
   end
 

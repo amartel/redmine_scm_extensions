@@ -1,7 +1,7 @@
 <h2><%=l(:label_scm_extensions_new_folder)%></h2>
 
 <h2><%= @scm_extensions.path %></h2>
-<% form_for :scm_extensions, @scm_extensions, :url => {:controller => 'scm_extensions', :action => 'mkdir', :id => @scm_extensions.project, :repository_id => @repository.identifier}, :html => {:multipart => true, :id => 'folder_form'} do |f| %>
+<%= form_for :scm_extensions, :url => {:controller => 'scm_extensions', :action => 'mkdir', :id => @scm_extensions.project, :repository_id => @repository.identifier}, :html => {:multipart => true, :id => 'folder_form'} do |f| %>
 <%= f.hidden_field :path %>
 
 <% if !@repository.is_a?(Repository::Filesystem) %>

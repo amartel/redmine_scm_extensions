@@ -15,6 +15,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
+  def suburi(url)
+    baseurl = Redmine::Utils.relative_url_root
+    if not url.match(/^#{baseurl}/)
+      url = baseurl + url
+    end
+    return url
+  end
   def view_repositories_show_contextual(context = { })
     @project = context[:project]
     @repository = context[:repository]
@@ -27,13 +34,21 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
     entry = @repository.entry(@path)
     output << "<span style='float: left; top: -10px; position: relative;'>"
     if entry.is_dir?
-      output << link_to(l(:label_scm_extensions_upload), {:controller => 'scm_extensions', :action => 'upload', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true}, :class => 'icon icon-add') if @repository.scm.respond_to?('scm_extensions_upload')
+      url = suburi(url_for(:controller => 'scm_extensions', :action => 'upload', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true))
+      output << "<a class='icon icon-add' href='#{url}'>#{l(:label_scm_extensions_upload)}</a>" if @repository.scm.respond_to?('scm_extensions_upload')
+      #output << link_to(l(:label_scm_extensions_upload), {:controller => 'scm_extensions', :action => 'upload', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true}, :class => 'icon icon-add') if @repository.scm.respond_to?('scm_extensions_upload')
       output << "&nbsp;&nbsp;"
-      output << link_to(l(:label_scm_extensions_new_folder), {:controller => 'scm_extensions', :action => 'mkdir', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true}, :class => 'icon icon-add') if @repository.scm.respond_to?('scm_extensions_mkdir')
+      #output << link_to(l(:label_scm_extensions_new_folder), {:controller => 'scm_extensions', :action => 'mkdir', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true}, :class => 'icon icon-add') if @repository.scm.respond_to?('scm_extensions_mkdir')
+      url = suburi(url_for(:controller => 'scm_extensions', :action => 'mkdir', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true))
+      output << "<a class='icon icon-add' href='#{url}'>#{l(:label_scm_extensions_new_folder)}</a>" if @repository.scm.respond_to?('scm_extensions_mkdir')
       output << "&nbsp;&nbsp;"
-      output << link_to(l(:label_scm_extensions_delete_folder), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @repository.scm.respond_to?('scm_extensions_delete')
+      #output << link_to(l(:label_scm_extensions_delete_folder), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @repository.scm.respond_to?('scm_extensions_delete')
+      url = suburi(url_for(:controller => 'scm_extensions', :action => 'delete', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true))
+      output << "<a class='icon icon-del' data-confirm='#{l(:text_are_you_sure)}' href='#{url}'>#{l(:label_scm_extensions_delete_folder)}</a>" if @repository.scm.respond_to?('scm_extensions_delete')
     else
-      output << link_to(l(:label_scm_extensions_delete_file), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @repository.scm.respond_to?('scm_extensions_delete')
+      #output << link_to(l(:label_scm_extensions_delete_file), {:controller => 'scm_extensions', :action => 'delete', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true},  :class => 'icon icon-del', :confirm => l(:text_are_you_sure)) if @repository.scm.respond_to?('scm_extensions_delete')
+      url = suburi(url_for(:controller => 'scm_extensions', :action => 'delete', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true))
+      output << "<a class='icon icon-del' data-confirm='#{l(:text_are_you_sure)}' href='#{url}'>#{l(:label_scm_extensions_delete_file)}</a>" if @repository.scm.respond_to?('scm_extensions_delete')
     end
     output << "</span>"
     if User.current.allowed_to?(:synapse_access, @project)

@@ -22,9 +22,9 @@ file = attachment['file']
 next unless file && file.size > 0
  %>
 * <%= if @obj.repository.identifier.blank?
-  link_to h(File.basename(file.original_filename)), url_for(:controller => 'repositories', :format => 'raw', :action => 'entry', :id => @obj.project,  :path => to_path_param(@folder_path+ '/' + File.basename(file.original_filename)), :rev => nil, :only_path => false) 
+  link_to h(File.basename(file.original_filename)), url_for(:controller => 'repositories', :action => 'raw', :id => @obj.project,  :path => to_path_param(@folder_path+ '/' + File.basename(file.original_filename)), :rev => nil, :only_path => false) 
   else
-  link_to h(File.basename(file.original_filename)), url_for(:controller => 'repositories', :format => 'raw', :action => 'entry', :id => @obj.project, :repository_id => @obj.repository.identifier, :path => to_path_param(@folder_path+ '/' + File.basename(file.original_filename)), :rev => nil, :only_path => false) 
+  link_to h(File.basename(file.original_filename)), url_for(:controller => 'repositories', :action => 'raw', :id => @obj.project, :repository_id => @obj.repository.identifier, :path => to_path_param(@folder_path+ '/' + File.basename(file.original_filename)), :rev => nil, :only_path => false) 
   end
   %>
 <% end %>
