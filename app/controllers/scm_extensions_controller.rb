@@ -124,7 +124,7 @@ class ScmExtensionsController < ApplicationController
 
   def show
     return if !User.current.allowed_to?(:browse_repository, @project)
-    @show_rev = params[:show_rev]
+    @show_rev = params[:show_rev] if params[:show_rev] && !(params[:show_rev] =~ (/(false|f|no|n|0)$/i))
     @link_details = params[:link_details]
     @entries = @repository.entries(@path, @rev)
     if request.xhr?
@@ -167,7 +167,7 @@ class ScmExtensionsController < ApplicationController
       @repository = @project.repository
     end
     (render_404; return false) unless @repository
-    @path = params[:path].join('/') unless params[:path].nil?
+    @path = (params[:path].kind_of?(Array) ? params[:path].join('/') : params[:path]) unless params[:path].nil?
     @path ||= ''
     @rev = params[:rev].blank? ? @repository.default_branch : params[:rev].strip
     @rev_to = params[:rev_to]
