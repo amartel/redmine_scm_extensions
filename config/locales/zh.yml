@@ -1,0 +1,19 @@
+# Simplified Chinese strings go
+zh:
+  project_module_scm_extensions: "SCM扩展"
+  permission_scm_write_access: "更新库"
+  label_scm_extensions_upload: "上传文件"
+  notice_scm_extensions_upload_success: "上传成功。"
+  error_scm_extensions_upload_failed: "系统错误。取消更新。"
+  error_scm_extensions_no_path_head: "路径在仓库的当前修订版本中不存在。"
+  error_scm_extensions_delete_failed: "系统个错误。取消删除。"
+  notice_scm_extensions_delete_success: "删除成功。"
+  notice_scm_extensions_mkdir_success: "文件夹/目录已创建。"
+  error_scm_extensions_mkdir_failed: "系统错误。文件夹/目录无法创建。"
+  label_scm_extensions_new_folder: "新建文件夹/目录"
+  label_scm_extensions_delete_folder: "删除文件夹/目录"
+  label_scm_extensions_delete_file: "删除文件"
+  label_scm_extensions_folder_name: "文件夹/目录名称"
+
+  label_scm_extensions_upload_subject: "%{value}: 上传文件可用。"
+  label_scm_extensions_upload_body: "以下文件已上传至对应文件夹/目录。"
