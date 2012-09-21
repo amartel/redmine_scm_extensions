@@ -44,7 +44,7 @@ module SCMExtensionsProjectMacro
       o = ""
       o << render(:partial => 'scm_extensions/dir_list')
 
-      return o
+      return o.html_safe
     end
   end
 
@@ -77,7 +77,7 @@ module SCMExtensionsProjectMacro
       o = ""
       o << render(:partial => 'scm_extensions/dir_list')
 
-      return o
+      return o.html_safe
     end
   end
 
@@ -102,7 +102,7 @@ module SCMExtensionsProjectMacro
       o = ""
       o << render(:partial => 'scm_extensions/issue_box')
 
-      return o
+      return o.html_safe
     end
   end
 end

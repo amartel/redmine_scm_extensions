@@ -125,7 +125,7 @@ class ScmExtensionsController < ApplicationController
   def show
     return if !User.current.allowed_to?(:browse_repository, @project)
     @show_rev = params[:show_rev] if params[:show_rev] && !(params[:show_rev] =~ (/(false|f|no|n|0)$/i))
-    @link_details = params[:link_details]
+    @link_details = params[:link_details] if params[:link_details] && !(params[:link_details] =~ (/(false|f|no|n|0)$/i))
     @entries = @repository.entries(@path, @rev)
     if request.xhr?
       @entries ? render(:partial => 'scm_extensions/dir_list_content') : render(:nothing => true)

@@ -2,15 +2,21 @@
 <% if !User.current.allowed_to?(:synapse_access, @project) || !(entry.name =~ /^\./) %>
 <% tr_id = Digest::MD5.hexdigest(entry.path)
    depth = params[:depth].to_i %>
+<%  ent_path = Redmine::CodesetUtil.replace_invalid_utf8(entry.path)   %>
+<%  ent_name = Redmine::CodesetUtil.replace_invalid_utf8(entry.name)   %>
 <tr id="<%= tr_id %>" class="<%= h params[:parent_id] %> entry <%= entry.kind %>">
-<td style="padding-left: <%=18 * depth%>px;" class="filename">
+<td style="padding-left: <%=18 * depth%>px;" class="<%=
+           @repository.report_last_commit ? "filename" : "filename_no_report" %>">
 <% if entry.is_dir? %>
-<span class="expander" onclick="<%=  remote_function :url => {:controller => 'scm_extensions', :action => 'show', :id => @project, :repository_id => @repository.identifier, :path => to_path_param(entry.path), :rev => @rev, :depth => (depth + 1), :parent_id => tr_id, :show_rev => @show_rev, :link_details => @link_details},
-									:method => :get,
-                  :update => { :success => tr_id },
-                  :position => :after,
-                  :success => "scmEntryLoaded('#{tr_id}')",
-                  :condition => "scmEntryClick('#{tr_id}')"%>">&nbsp</span>
+<span class="expander" onclick="scmEntryClick('<%= tr_id %>', '<%= escape_javascript(url_for(
+                       :controller => 'scm_extensions',
+                       :action => 'show',
+                       :id     => @project,
+                       :repository_id => @repository.identifier,
+                       :path   => to_path_param(ent_path),
+                       :rev    => @rev,
+                       :depth  => (depth + 1),
+                       :parent_id => tr_id, :show_rev => @show_rev, :link_details => @link_details)) %>');">&nbsp;</span>
 <% end %>
 <% if @link_details %>
 <%=  link_to h(entry.name),
