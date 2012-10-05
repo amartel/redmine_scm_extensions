@@ -34,8 +34,8 @@ module FilesystemAdapterMethodsScmExtensions
     metapath = (self.url =~ /\/files\/$/ && File.exist?(self.url.sub(/\/files\//, "/attributes")))
 
     rev = identifier ? "@{identifier}" : ""
-    container =  entries(folder_path, identifier)
-    if container
+    fullpath = File.join(repository.url, folder_path)
+    if File.exist?(fullpath) && File.directory?(fullpath)
       error = false
 
       if repository.supports_all_revisions?
@@ -94,8 +94,7 @@ module FilesystemAdapterMethodsScmExtensions
     return -1 if path.nil? || path.empty?
     return -1 if scm_extensions_invalid_path(path)
     metapath = (self.url =~ /\/files\/$/ && File.exist?(self.url.sub(/\/files\//, "/attributes")))
-    container =  entries(path, identifier)
-    if container && path != "/"
+    if File.exist?(File.join(repository.url, path)) && path != "/"
       error = false
 
       begin
