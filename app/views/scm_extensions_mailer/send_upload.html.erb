@@ -1,4 +1,4 @@
-<p><span class="author" style="color: black; font-style:italic; font-weight: normal;"><%= l(:label_added_time_by, :author => User.current, :age => time_tag(Time.now)) %>:</span>
+<p><span class="author" style="color: black; font-style:italic; font-weight: normal;"><%= l(:label_added_time_by, :author => User.current, :age => time_tag(Time.now)).html_safe %>:</span>
 </p>
 <p><%= textilizable(@obj, :comments, :only_path => false) %></p>
 
