@@ -32,7 +32,7 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
     return output if (@revision && !@revision.empty? && @revision != "HEAD"  && @repository.is_a?(Repository::Subversion))
     return output if !(User.current.allowed_to?(:scm_write_access, @project) && User.current.allowed_to?(:commit_access, @project))
     entry = @repository.entry(@path)
-    output << "<span style='float: left; top: -10px; position: relative;'>"
+    output << "<table style='position: relative; top: -5px;' width='100%' border='0' cellpadding='0' cellspacing='0'><tr><td style='width: 1%; white-space:nowrap;text-align: left;'>"
     if entry.is_dir?
       url = suburi(url_for(:controller => 'scm_extensions', :action => 'upload', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true))
       output << "<a class='icon icon-add' href='#{url}'>#{l(:label_scm_extensions_upload)}</a>" if @repository.scm.respond_to?('scm_extensions_upload')
@@ -50,9 +50,9 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
       url = suburi(url_for(:controller => 'scm_extensions', :action => 'delete', :id => @project, :repository_id => @repository.identifier, :path => @path, :only_path => true))
       output << "<a class='icon icon-del' data-confirm='#{l(:text_are_you_sure)}' href='#{url}'>#{l(:label_scm_extensions_delete_file)}</a>" if @repository.scm.respond_to?('scm_extensions_delete')
     end
-    output << "</span>"
+    output << "</td>"
     if User.current.allowed_to?(:synapse_access, @project)
-      output << "&nbsp;<span style='float: right; top: -10px; position: relative;'>"
+      output << "<td syle='width: 98%'> </td><td style='text-align: right; width: 1%; white-space:nowrap;'>"
       options={}
       options[:target]='_blank'
       begin
@@ -76,9 +76,11 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
       rescue
         output << ""
       end
-      output << "</span>"
+      output << "</td>"
+    else
+      output << "<td width: 99%'> </td>"
     end
-    output << "<br/>"
+    output << "</tr></table>"
     return output
   end
 end
