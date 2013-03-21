@@ -124,6 +124,7 @@ class ScmExtensionsController < ApplicationController
 
   def show
     return if !User.current.allowed_to?(:browse_repository, @project)
+    @show_cb = params[:show_cb] if params[:show_cb] && !(params[:show_cb] =~ (/(false|f|no|n|0)$/i))
     @show_rev = params[:show_rev] if params[:show_rev] && !(params[:show_rev] =~ (/(false|f|no|n|0)$/i))
     @link_details = params[:link_details] if params[:link_details] && !(params[:link_details] =~ (/(false|f|no|n|0)$/i))
     @entries = @repository.entries(@path, @rev)
@@ -144,6 +145,50 @@ class ScmExtensionsController < ApplicationController
     (show_error_not_found; return) unless @content
     # Force the download
     send_data @content, :filename => @path.split('/').last, :disposition => "inline", :type => Redmine::MimeType.of(@path.split('/').last)
+  end
+
+  def notify
+    path_root = @repository.identifier.blank? ? "root" : @repository.identifier
+    path = ""
+    path << path_root
+    path << "/#{params[:path]}" if (params[:path] && !params[:path].empty?)
+    @scm_extensions = ScmExtensionsWrite.new(:path => path, :project => @project, :repository => @repository)
+    @show_cb = true
+
+    @rev = nil
+    @show_rev = nil
+    @link_details = nil
+    #need @entries, @rev, @project
+    spath = ""
+    spath = params[:path] if (params[:path] && !params[:path].empty?)
+    @entries = @repository.entries(spath, @rev)
+
+    if !request.get? && !request.xhr?
+      @scm_extensions.path = params[:scm_extensions][:path]
+      @scm_extensions.comments = params[:scm_extensions][:comments]
+      @scm_extensions.recipients = params[:watchers]
+      reg = Regexp.new("^#{path_root}")
+      path = params[:scm_extensions][:path].sub(reg,'').sub(/^\//,'')
+      attached = []
+      svnpath = path.empty? ? "/" : path
+      selectedfiles = []
+      if params[:selectedfiles]
+        reg2 = Regexp.new("^#{path}")
+        params[:selectedfiles].each do |entrypath|
+          selectedfiles << entrypath.sub(reg2,'').sub(/^\//,'')
+        end
+      end
+
+      @scm_extensions.notify(selectedfiles) 
+      flash[:notice] = l(:notice_scm_extensions_email_success) if @scm_extensions.recipients
+
+      if @repository.identifier.blank?
+        redirect_to :controller => 'repositories', :action => 'show', :id => @project, :path => path.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+      else
+        redirect_to :controller => 'repositories', :action => 'show', :id => @project, :repository_id => @repository.identifier, :path => path.to_s.split(%r{[/\\]}).select {|p| !p.blank?}
+      end
+      return
+    end
   end
 
   private

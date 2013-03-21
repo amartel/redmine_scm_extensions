@@ -1,0 +1,54 @@
+<h2><%=l(:label_scm_extensions_notify)%></h2>
+
+<script language="javascript">
+function SetAllCheckBoxes(CheckValue)
+{
+	if(!document.forms['files_form'])
+		return;
+	var objCheckBoxes = document.forms['files_form'].elements['watchers_'];
+	if(!objCheckBoxes)
+		return;
+	var countCheckBoxes = objCheckBoxes.length;
+	if(!countCheckBoxes)
+		objCheckBoxes.checked = CheckValue;
+	else
+		// set the check value for all check boxes
+		for(var i = 0; i < countCheckBoxes; i++)
+			objCheckBoxes[i].checked = CheckValue;
+}
+function addFileUploadField() {
+    if (fileFieldCount >= 10) return false
+    fileFieldCount++;
+    var f = document.createElement("input");
+    f.type = "file";
+    f.name = "attachments[" + fileFieldCount + "][file]";
+    f.size = 30;
+    p = document.getElementById("attachments_fields");
+    p.appendChild(document.createElement("br"));
+    p.appendChild(f);
+}
+
+</script>
+<h2><%= @scm_extensions.path %></h2>
+<%= form_for :scm_extensions, :url => {:controller => 'scm_extensions', :action => 'notify', :id => @scm_extensions.project, :repository_id => @repository.identifier}, :html => {:multipart => true, :id => 'files_form'} do |f| %>
+<%= f.hidden_field :path %>
+<p><strong><label><%=l(:label_scm_select_files)%></label></strong><br /><%= render :partial => 'scm_extensions/dir_list' %></p>
+<hr>
+<p><label><%=l(:field_comments)%></label><%= f.text_area :comments, :cols => 100, :rows => 10, :accesskey => accesskey(:edit), :class => 'wiki-edit' %></p>
+<p><strong><label><%= l(:field_scm_mail_recipients) %></label></strong>
+<% @project.users.sort.each do |user| -%>
+<label class="floating"><%= check_box_tag 'watchers[]', user.mail, false %> <%=h user %></label>
+<% end -%><br>
+<input type="button" value="<%= l(:label_all) %>" onclick="SetAllCheckBoxes(true)" />
+<input type="button" value="<%= l(:label_none) %>" onclick="SetAllCheckBoxes(false)" />
+</p>
+<br/>
+<p><%= submit_tag l(:button_send_notification) %>
+</p>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'scm' %>
+<% end %>
+
+<% html_title(l(:label_scm_extensions_upload)) -%>

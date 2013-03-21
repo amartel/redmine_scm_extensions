@@ -1,6 +1,9 @@
 <table class="list entries" id="browser">
 <thead>
 <tr id="root">
+<% if @show_cb %>
+<th style="width: 25px;">&nbsp;</th>
+<% end %>
 <th><%= l(:field_name) %></th>
 <th><%= l(:field_filesize) %></th>
 <% if @show_rev %>

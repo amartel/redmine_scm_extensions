@@ -17,3 +17,10 @@ en:
 
   label_scm_extensions_upload_subject: "%{value}: New files are available"
   label_scm_extensions_upload_body: "The following files have been uploaded in the folder/directory "
+  label_scm_extensions_notify: Notify (email)
+  label_scm_select_files: select files and folders that will be referenced in email
+  field_scm_mail_recipients: recipients
+  notice_scm_extensions_email_success: Notification done
+  button_send_notification: Send notification
+  label_scm_extensions_notify_body: "Following files can be found in folder "
+  label_scm_extensions_notify_by: "Mail from %{author}"

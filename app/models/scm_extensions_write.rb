@@ -23,4 +23,8 @@ class ScmExtensionsWrite
       return true
   end
 
+  def notify(selectedfiles)
+    ScmExtensionsMailer.notify(self, selectedfiles).deliver
+      return true
+  end
 end

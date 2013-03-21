@@ -17,3 +17,10 @@ fr:
 
   label_scm_extensions_upload_subject: "%{value}: Nouveaux fichiers disponibles"
   label_scm_extensions_upload_body: "Les fichiers suivants ont été transférés dans le répertoire "
+  label_scm_extensions_notify: "Notifier (email)"
+  label_scm_select_files: "Sélectionnez les fichiers et dossiers à référencer dans le message"
+  field_scm_mail_recipients: Destinataires
+  notice_scm_extensions_email_success: Notification envoyée
+  button_send_notification: Envoyer le message
+  label_scm_extensions_notify_body: "Les fichiers/dossiers suivants sont accessibles depuis le dossier "
+  label_scm_extensions_notify_by: "Message de %{author}"
