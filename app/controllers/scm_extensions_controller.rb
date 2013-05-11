@@ -141,10 +141,16 @@ class ScmExtensionsController < ApplicationController
     # If the entry is a dir, show the browser
     (show; return) if @entry.is_dir?
 
-    @content = @repository.cat(@path, @rev)
-    (show_error_not_found; return) unless @content
-    # Force the download
-    send_data @content, :filename => @path.split('/').last, :disposition => "inline", :type => Redmine::MimeType.of(@path.split('/').last)
+    if @repository.is_a?(Repository::Filesystem)
+      data_to_send = File.new(File.join(@repository.url, @path))
+      (show_error_not_found; return) unless File.exists?(data_to_send.path)
+      send_file File.expand_path(data_to_send.path), :filename => @path.split('/').last, :stream => true
+    else
+      @content = @repository.cat(@path, @rev)
+      (show_error_not_found; return) unless @content
+      # Force the download
+      send_data @content, :filename => @path.split('/').last, :disposition => "inline", :type => Redmine::MimeType.of(@path.split('/').last)
+    end
   end
 
   def notify
