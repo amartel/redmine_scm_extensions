@@ -33,6 +33,10 @@ A new permission is now available (SCM extensions -> Update repository) and you 
 
 h1. History
 
+0.4.0: 
+* New: add button to send a notification email about existing files
+* New: redmine 2.3.0 or higher is required
+
 0.3.0: 2012-08-21
 * New: redmine 2.0.3 or higher is required
 

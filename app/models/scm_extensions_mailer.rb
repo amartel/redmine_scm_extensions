@@ -1,8 +1,8 @@
 class ScmExtensionsMailer < Mailer
-  def send_upload(obj, attachments )
+  def send_upload(obj, attachments, language, rec )
     @obj = obj
     @attachments = attachments
-    rec = @obj.recipients
+    set_language_if_valid language
     path_root = @obj.repository.identifier.blank? ? 'root' : @obj.repository.identifier
     sub = l(:label_scm_extensions_upload_subject, obj.project.name)
     reg = Regexp.new("^#{path_root}")
@@ -11,10 +11,10 @@ class ScmExtensionsMailer < Mailer
     :subject => sub
   end
 
-  def notify(obj, selectedfiles )
+  def notify(obj, selectedfiles, language, rec )
     @obj = obj
     @selectedfiles = selectedfiles
-    rec = @obj.recipients
+    set_language_if_valid language
     path_root = @obj.repository.identifier.blank? ? 'root' : @obj.repository.identifier
     sub = l(:label_scm_extensions_upload_subject, obj.project.name)
     reg = Regexp.new("^#{path_root}")

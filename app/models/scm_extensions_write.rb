@@ -19,12 +19,45 @@ class ScmExtensionsWrite
   end
 
   def deliver(attachments)
-    ScmExtensionsMailer.send_upload(self, attachments).deliver
-      return true
+    recipientsWithLang = {}
+    if !self.recipients.nil?
+      self.recipients.each do |mail|
+        user = User.find_by_mail(mail);
+        if !user.nil?
+          lang = user.language
+          if recipientsWithLang[lang].nil?
+            recipientsWithLang[lang] = [ mail ]
+          else
+            recipientsWithLang[lang] << mail
+          end
+        end
+      end
+      recipientsWithLang.each do |language,rec|
+        ScmExtensionsMailer.send_upload(self, attachments, language, rec).deliver
+      end
+    end
+    return true
+
   end
 
   def notify(selectedfiles)
-    ScmExtensionsMailer.notify(self, selectedfiles).deliver
-      return true
+    recipientsWithLang = {}
+    if !self.recipients.nil?
+      self.recipients.each do |mail|
+        user = User.find_by_mail(mail);
+        if !user.nil?
+          lang = user.language
+          if recipientsWithLang[lang].nil?
+            recipientsWithLang[lang] = [ mail ]
+          else
+            recipientsWithLang[lang] << mail
+          end
+        end
+      end
+      recipientsWithLang.each do |language,rec|
+        ScmExtensionsMailer.notify(self, selectedfiles, language, rec).deliver
+      end
+    end
+    return true
   end
 end

@@ -50,20 +50,39 @@ module FilesystemAdapterMethodsScmExtensions
       
       end
       attachments.each_value do |attachment|
-        file = attachment['file']
-        next unless file && file.size > 0 && !error
-        filename = File.basename(file.original_filename)
-        next if scm_extensions_invalid_path(filename)
+        ajaxuploaded = attachment.has_key?("token")
+
+        if ajaxuploaded
+          filename = attachment['filename']
+          token = attachment['token']
+          tmp_att = Attachment.find_by_token(token)
+          file = tmp_att.diskfile
+        else
+          file = attachment['file']
+          next unless file && file.size > 0 && !error
+          filename = File.basename(file.original_filename)
+          next if scm_extensions_invalid_path(filename)
+        end      
+        
         begin
           if repository.supports_all_revisions?
             action = "A"
             action = "M" if File.exists?(File.join(repository.url, folder_path, filename)) 
             Change.create( :changeset => changeset, :action => action, :path => File.join("/", folder_path, filename))
           end
-          File.open(File.join(repository.url, folder_path, filename), "wb") do |f|
-            buffer = ""
-            while (buffer = file.read(8192))
-              f.write(buffer)
+          outfile = File.join(repository.url, folder_path, filename)
+          if ajaxuploaded
+            if File.exist?(outfile)
+              File.delete(outfile)
+            end
+            FileUtils.mv file, outfile
+            tmp_att.destroy
+          else
+            File.open(outfile, "wb") do |f|
+              buffer = ""
+              while (buffer = file.read(8192))
+                f.write(buffer)
+              end
             end
           end
           if metapath

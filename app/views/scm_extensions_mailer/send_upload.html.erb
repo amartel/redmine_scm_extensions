@@ -19,13 +19,19 @@ end
 
 <ul>
 <% @attachments.each_value do |attachment|
-file = attachment['file']
-next unless file && file.size > 0
+filename = nil?
+if attachment.has_key?("token")
+  filename = attachment['filename']
+else
+  file = attachment['file']
+  filename = File.basename(file.original_filename) if file
+end
+next unless filename
  %>
 <li><%= if @obj.repository.identifier.blank?
-link_to h(File.basename(file.original_filename)), url_for(:controller => 'repositories', :action => 'raw', :id => @obj.project,  :path => to_path_param(@folder_path+ '/' + File.basename(file.original_filename)), :rev => nil, :only_path => false) 
+link_to h(filename), url_for(:controller => 'repositories', :action => 'raw', :id => @obj.project,  :path => to_path_param(@folder_path+ '/' + filename), :rev => nil, :only_path => false) 
 else
-link_to h(File.basename(file.original_filename)), url_for(:controller => 'repositories', :action => 'raw', :id => @obj.project, :repository_id => @obj.repository.identifier, :path => to_path_param(@folder_path+ '/' + File.basename(file.original_filename)), :rev => nil, :only_path => false) 
+link_to h(filename), url_for(:controller => 'repositories', :action => 'raw', :id => @obj.project, :repository_id => @obj.repository.identifier, :path => to_path_param(@folder_path+ '/' + filename), :rev => nil, :only_path => false) 
 end
 %></li>
   <% end %>
