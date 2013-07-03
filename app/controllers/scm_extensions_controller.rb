@@ -49,8 +49,8 @@ class ScmExtensionsController < ApplicationController
           ret = @repository.scm.scm_extensions_upload(@repository, svnpath, params[:attachments], params[:scm_extensions][:comments], nil)
           case ret
           when 0
-            flash[:notice] = l(:notice_scm_extensions_upload_success) if @scm_extensions.recipients
-            @scm_extensions.deliver(params[:attachments]) 
+            flash[:notice] = l(:notice_scm_extensions_upload_success)
+            @scm_extensions.deliver(params[:attachments]) if @scm_extensions.recipients
           when 1
             flash[:error] = l(:error_scm_extensions_upload_failed)
           when 2
