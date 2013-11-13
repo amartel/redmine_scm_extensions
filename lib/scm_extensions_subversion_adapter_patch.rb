@@ -180,6 +180,10 @@ module SubversionAdapterMethodsScmExtensions
     return error ? 1 : 0
   end
 
+  def scm_extensions_invalid_path(path)
+    return path =~ /\/\.\.\//
+  end
+
 end
 
 Redmine::Scm::Adapters::SubversionAdapter.send(:include, ScmExtensionsSubversionAdapterPatch)
