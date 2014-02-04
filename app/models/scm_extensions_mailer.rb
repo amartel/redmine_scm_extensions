@@ -7,7 +7,7 @@ class ScmExtensionsMailer < Mailer
     sub = l(:label_scm_extensions_upload_subject, obj.project.name)
     reg = Regexp.new("^#{path_root}")
     @folder_path = @obj.path.sub(reg,'').sub(/^\//,'')
-    mail :to => rec,
+    mail :to => rec, :reply_to => User.current.mail,
     :subject => sub
   end
 
@@ -19,7 +19,7 @@ class ScmExtensionsMailer < Mailer
     sub = l(:label_scm_extensions_upload_subject, obj.project.name)
     reg = Regexp.new("^#{path_root}")
     @folder_path = @obj.path.sub(reg,'').sub(/^\//,'')
-    mail :to => rec,
+    mail :to => rec, :reply_to => User.current.mail,
     :subject => sub
   end
 end
