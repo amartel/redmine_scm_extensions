@@ -96,6 +96,15 @@ module SubversionAdapterMethodsScmExtensions
             next if scm_extensions_invalid_path(filename)
           end      
 
+          if filename.respond_to?(:force_encoding)
+            filename.force_encoding("UTF-8-MAC")
+            if !filename.valid_encoding?
+              filename.force_encoding("UTF-8")
+            else
+              filename.encode!(Encoding::UTF_8)
+            end
+          end
+          
           entry = entries(File.join(folder_path,filename), identifier)
           if entry && entry.size > 0
             cmd = "#{Redmine::Scm::Adapters::SubversionAdapter::SVN_BIN} update \"#{File.join(dir, filename)}\" --username #{User.current.login}"
