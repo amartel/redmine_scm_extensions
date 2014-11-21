@@ -1,0 +1,26 @@
+# Turkish strings go
+tr:
+  project_module_scm_extensions: "SCM eklentileri"
+  permission_scm_write_access: "Depoyu güncelle"
+  label_scm_extensions_upload: "Dosya(lar) yükle"
+  notice_scm_extensions_upload_success: "Yüklendi"
+  error_scm_extensions_upload_failed: "Hata. Yükleme iptal edildi"
+  error_scm_extensions_no_path_head: "Deponun mevcut sürümünde dosya yolu bulunamıyor"
+  error_scm_extensions_delete_failed: "Hata. Silme iptal edildi"
+  notice_scm_extensions_delete_success: "Silindi"
+  notice_scm_extensions_mkdir_success: "Klasör oluşturuldu."
+  error_scm_extensions_mkdir_failed: "Hata. Klasör oluşturulamadı."
+  label_scm_extensions_new_folder: "Yeni Klasör"
+  label_scm_extensions_delete_folder: "Klasörü sil"
+  label_scm_extensions_delete_file: "Dosyayı sil"
+  label_scm_extensions_folder_name: "Yeni klasörün adı"
+
+  label_scm_extensions_upload_subject: "%{value}: Yeni dosyalar var"
+  label_scm_extensions_upload_body: "Aşağıdaki dosyalar, klasöre yüklendi "
+  label_scm_extensions_notify: Haber ver (eposta)
+  label_scm_select_files: Eposta'da bahsedilecek dosyaları ve klasörleri seçin
+  field_scm_mail_recipients: alıcılar
+  notice_scm_extensions_email_success: Bildirim tamamlandı
+  button_send_notification: Bildirim gönder
+  label_scm_extensions_notify_body: "Aşağıdaki dosyalar, klasörde bulunabilir "
+  label_scm_extensions_notify_by: "%{author}'dan eposta"
