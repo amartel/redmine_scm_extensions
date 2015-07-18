@@ -34,7 +34,7 @@ module FilesystemAdapterMethodsScmExtensions
     metapath = (self.url =~ /\/files\/$/ && File.exist?(self.url.sub(/\/files\//, "/attributes")))
 
     rev = identifier ? "@{identifier}" : ""
-    fullpath = File.join(repository.url, folder_path)
+    fullpath = File.join(repository.scm.url, folder_path)
     if File.exist?(fullpath) && File.directory?(fullpath)
       error = false
 
@@ -67,10 +67,10 @@ module FilesystemAdapterMethodsScmExtensions
         begin
           if repository.supports_all_revisions?
             action = "A"
-            action = "M" if File.exists?(File.join(repository.url, folder_path, filename)) 
+            action = "M" if File.exists?(File.join(repository.scm.url, folder_path, filename))
             Change.create( :changeset => changeset, :action => action, :path => File.join("/", folder_path, filename))
           end
-          outfile = File.join(repository.url, folder_path, filename)
+          outfile = File.join(repository.scm.url, folder_path, filename)
           if ajaxuploaded
             if File.exist?(outfile)
               File.delete(outfile)
@@ -86,7 +86,7 @@ module FilesystemAdapterMethodsScmExtensions
             end
           end
           if metapath
-            metapathtarget = File.join(repository.url, folder_path, filename).sub(/\/files\//, "/attributes/")
+            metapathtarget = File.join(repository.scm.url, folder_path, filename).sub(/\/files\//, "/attributes/")
             FileUtils.mkdir_p File.dirname(metapathtarget)
             File.open(metapathtarget, "w") do |f|
               f.write("#{User.current}\n")
@@ -113,7 +113,7 @@ module FilesystemAdapterMethodsScmExtensions
     return -1 if path.nil? || path.empty?
     return -1 if scm_extensions_invalid_path(path)
     metapath = (self.url =~ /\/files\/$/ && File.exist?(self.url.sub(/\/files\//, "/attributes")))
-    if File.exist?(File.join(repository.url, path)) && path != "/"
+    if File.exist?(File.join(repository.scm.url, path)) && path != "/"
       error = false
 
       begin
@@ -129,9 +129,9 @@ module FilesystemAdapterMethodsScmExtensions
           Change.create( :changeset => changeset, :action => 'D', :path => File.join("/", path))
         end
           
-      FileUtils.remove_entry_secure File.join(repository.url, path)
+      FileUtils.remove_entry_secure File.join(repository.scm.url, path)
       if metapath
-        metapathtarget = File.join(repository.url, path).sub(/\/files\//, "/attributes/")
+        metapathtarget = File.join(repository.scm.url, path).sub(/\/files\//, "/attributes/")
         FileUtils.remove_entry_secure metapathtarget if File.exist?(metapathtarget)
       end
       rescue
@@ -159,7 +159,7 @@ module FilesystemAdapterMethodsScmExtensions
                                                  :comments => "created folder: #{path}")
         Change.create( :changeset => changeset, :action => 'A', :path => File.join("/", path))
       end
-      Dir.mkdir(File.join(repository.url, path))
+      Dir.mkdir(File.join(repository.scm.url, path))
     rescue
       error = true
     end

@@ -60,7 +60,7 @@ class ScmExtensionsRepositoryViewHook < Redmine::Hook::ViewListener
       options[:target]='_blank'
       begin
         if @repository.is_a?(Repository::Filesystem)
-          rootdir = @repository.url
+          rootdir = @repository.scm.url
           mountdir = rootdir.sub(/\/files$/, '')
           repo_size=""
           repo_size = `/opt/appli/checksize #{mountdir}  #{@project.identifier}` if File.exist?("/opt/appli/checksize")

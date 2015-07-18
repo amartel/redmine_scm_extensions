@@ -142,7 +142,7 @@ class ScmExtensionsController < ApplicationController
     (show; return) if @entry.is_dir?
 
     if @repository.is_a?(Repository::Filesystem)
-      data_to_send = File.new(File.join(@repository.url, @path))
+      data_to_send = File.new(File.join(@repository.scm.url, @path))
       (show_error_not_found; return) unless File.exists?(data_to_send.path)
       send_file File.expand_path(data_to_send.path), :filename => @path.split('/').last, :stream => true
     else
